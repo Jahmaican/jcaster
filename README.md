@@ -1,0 +1,9 @@
+jCaster
+======
+[<img src="http://i.imgur.com/WK93rEOs.png">](http://i.imgur.com/WK93rEO)  
+  
+This is basically the simplest [Lode's Raycaster](http://lodev.org/cgtutor/raycasting.html) rewritten to Ruby (gosu, texplay). Helped me to understand the raycasting technique. I'm going to optimize the code and maybe turn it into an actual game some time.  
+  
+**Controls:**  
+Arrow keys/WSAD  
+Esc to exit.

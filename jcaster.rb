@@ -2,8 +2,8 @@ MAPW = 24
 MAPH = 24
 IMGW = 320
 IMGH = 240
-SCRW = 1024
-SCRH = 768
+SCRW = 640
+SCRH = 480
 VERSION = "0.01"
 DEBUG = true
 
@@ -44,7 +44,7 @@ $worldMap = [[1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1],
             
 class JCaster < Window
   def initialize
-    super SCRW, SCRH, true
+    super SCRW, SCRH, false
     self.caption = "jCaster"
     enable_undocumented_retrofication
     
