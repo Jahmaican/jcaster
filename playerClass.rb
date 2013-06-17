@@ -19,6 +19,16 @@ attr_reader :posX, :posY, :dirX, :dirY, :planeX, :planeY, :moveSpeed, :rotSpeed
     end
     
     def right
+      @posX += @planeX * @moveSpeed if $worldMap[(@posX + @planeX * @moveSpeed).to_i][@posY.to_i] == 0
+      @posY += @planeY * @moveSpeed if $worldMap[@posX.to_i][(@posY + @planeY * @moveSpeed).to_i] == 0
+    end
+
+    def left
+      @posX -= @planeX * @moveSpeed if $worldMap[(@posX - @planeX * @moveSpeed).to_i][@posY.to_i] == 0
+      @posY -= @planeY * @moveSpeed if $worldMap[@posX.to_i][(@posY - @planeY * @moveSpeed).to_i] == 0
+    end
+    
+    def turnRight
       oldDirX = @dirX;
       @dirX = @dirX * Math::cos(-@rotSpeed) - @dirY * Math::sin(-@rotSpeed)
       @dirY = oldDirX * Math::sin(-@rotSpeed) + @dirY * Math::cos(-@rotSpeed)
@@ -27,7 +37,7 @@ attr_reader :posX, :posY, :dirX, :dirY, :planeX, :planeY, :moveSpeed, :rotSpeed
       @planeY = oldPlaneX * Math::sin(-@rotSpeed) + @planeY * Math::cos(-@rotSpeed)
     end
 
-    def left
+    def turnLeft
       oldDirX = @dirX
       @dirX = @dirX * Math::cos(@rotSpeed) - @dirY * Math::sin(@rotSpeed)
       @dirY = oldDirX * Math::sin(@rotSpeed) + @dirY * Math::cos(@rotSpeed)

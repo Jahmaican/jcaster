@@ -34,8 +34,10 @@ attr_reader :gracz, :mapa
     @mapa.update
     @gracz.up if button_down? KbUp or button_down? KbW
     @gracz.down if button_down? KbDown or button_down? KbS
-    @gracz.left if button_down? KbLeft or button_down? KbA
-    @gracz.right if button_down? KbRight or button_down? KbD
+    @gracz.left if button_down? KbA
+    @gracz.right if button_down? KbD
+    @gracz.turnLeft if button_down? KbLeft or button_down? KbQ
+    @gracz.turnRight if button_down? KbRight or button_down? KbE
     close if button_down? KbEscape
   end
   
