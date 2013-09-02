@@ -1,10 +1,8 @@
 class Map
   def initialize(window)
-    @window = window
     @bg = TexPlay::create_blank_image(window, IMGW, IMGH)
     @map = TexPlay::create_blank_image(window, IMGW, IMGH)
-    
-    @wallset = [Image.load_tiles(window, "media/walls.png", 64, 64, true), Image.load_tiles(window, "media/wallsd.png", 64, 64, true)]
+    @window = window
     
     @bg.rect(0,0,SCRW,IMGH>>1, :color => [0.6, 0.7, 1.0], :fill => true)
     @bg.rect(0,IMGH>>1,SCRW,IMGH, :color => [0.1, 0.1, 0.1], :fill => true)
@@ -65,8 +63,22 @@ class Map
       drawEnd = lineHeight / 2 + IMGH / 2
       drawEnd = IMGH - 1 if drawEnd >= IMGH
       
-      @map.line(x, drawStart, x, drawEnd, :texture => @wallset[side][$worldMap[mapX][mapY]])
+      case $worldMap[mapX][mapY]
+      when 1
+        color = [1.0, 0, 0]
+      when 2
+        color = [0, 1.0, 0]
+      when 3
+        color = [0, 0, 1.0]
+      when 4
+        color = [1.0, 1.0, 1.0]
+      else
+        color = [1.0, 1.0, 0]
+      end
+
+      color = color.collect {|i| i/2} if side == 1
         
+      @map.line(x, drawStart, x, drawEnd, :color => color)
     end
   end
 

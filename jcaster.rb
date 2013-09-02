@@ -1,8 +1,8 @@
 IMGW = 320
 IMGH = 240
-SCRW = 640
-SCRH = 480
-VERSION = "0.02"
+SCRW = 1024
+SCRH = 768
+VERSION = "0.03"
 DEBUG = true
 
 def debug(message)
@@ -13,35 +13,34 @@ require 'gosu'
 require 'texplay'
 include Gosu
 
-debug("jCaster v" + VERSION + "\n\t\tby Jahmaican")
+debug("jCaster v#{VERSION} \n\t\tby Jahmaican")
 
 require './worldMap.rb'
 require './playerClass.rb'
-require './mapClass.rb'
+require './mapClassBasic.rb'
  
 class JCaster < Window
 attr_reader :gracz, :mapa
   def initialize
-    super SCRW, SCRH, false
+    super SCRW, SCRH, true
     self.caption = "jCaster"
     enable_undocumented_retrofication
+    @font = Gosu::Font.new(self, default_font_name, 20)
 
-    @gracz = Player.new
+    @gracz = Player.new(self)
     @mapa = Map.new(self)
   end
-  
+    
   def update
     @mapa.update
-    @gracz.up if button_down? KbUp or button_down? KbW
-    @gracz.down if button_down? KbDown or button_down? KbS
-    @gracz.left if button_down? KbA
-    @gracz.right if button_down? KbD
-    @gracz.turnLeft if button_down? KbLeft or button_down? KbQ
-    @gracz.turnRight if button_down? KbRight or button_down? KbE
+    @gracz.update
     close if button_down? KbEscape
   end
   
   def draw
+    @font.draw("#{fps} fps", 10, 10, 10, 1, 1, color = 0xffffffff, :default) if DEBUG
+    
+    @gracz.draw
     @mapa.draw
   end
 end
