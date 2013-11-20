@@ -1,8 +1,8 @@
-IMGW = 320
-IMGH = 240
-SCRW = 1024
-SCRH = 768
-VERSION = "0.03"
+IMGW = 800
+IMGH = 600
+SCRW = 800
+SCRH = 600
+VERSION = "0.10"
 DEBUG = true
 
 def debug(message)
@@ -10,24 +10,23 @@ def debug(message)
 end
 
 require 'gosu'
-require 'texplay'
 include Gosu
 
 debug("jCaster v#{VERSION} \n\t\tby Jahmaican")
 
 require './worldMap.rb'
 require './playerClass.rb'
-require './mapClassBasic.rb'
+require './mapClass.rb'
  
 class JCaster < Window
 attr_reader :gracz, :mapa
   def initialize
-    super SCRW, SCRH, true
+	super SCRW, SCRH, false
     self.caption = "jCaster"
     enable_undocumented_retrofication
     @font = Gosu::Font.new(self, default_font_name, 20)
 
-    @gracz = Player.new(self)
+    @gracz = Player.new(self, 18, 3)
     @mapa = Map.new(self)
   end
     

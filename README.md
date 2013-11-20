@@ -5,6 +5,5 @@ jCaster
 This is basically the simplest [Lode's Raycaster](http://lodev.org/cgtutor/raycasting.html) rewritten to Ruby (gosu, texplay). Helped me to understand the raycasting technique. I'm going to optimize the code and maybe turn it into an actual game some time.  
   
 **Controls:**  
-WSAD to move  
-Mouse to look around  
+Arrow keys/WSAD+QE  
 Esc to exit.

@@ -2,12 +2,12 @@ BOBBING = true
 
 class Player
 attr_reader :posX, :posY, :dirX, :dirY, :planeX, :planeY, :moveSpeed, :rotSpeed
-  def initialize(window)
+  def initialize(window, posX, posY)
     @window = window
-    @posX, @posY = 22.0, 12.0
+    @posX, @posY = posX, posY
     @dirX, @dirY = -1.0, 0.0
     @planeX, @planeY = 0.0, 1.0
-    @moveSpeed = 0.16
+    @moveSpeed = 0.12
 
     @window.mouse_x = @window.width >> 1
     @mousePos = @window.mouse_x
@@ -15,8 +15,14 @@ attr_reader :posX, :posY, :dirX, :dirY, :planeX, :planeY, :moveSpeed, :rotSpeed
     
     @weapon = Image.new(window, "media/uzi.gif", false)
     @weapon_offset = 0
-    @cross = TexPlay::create_blank_image(window, 2, 2)
-    @cross.rect(0,0,1,1, :color => [1.0, 1.0, 1.0], :fill => true)
+    @weapon_ratio = 0.3*SCRH.fdiv(@weapon.height)
+    
+    @cross = @window.record(5, 5) do
+      @window.draw_quad(2, 0, Color::WHITE, 3, 0, Color::WHITE, 2, 2, Color::WHITE, 3, 2, Color::WHITE) 
+      @window.draw_quad(2, 3, Color::WHITE, 3, 3, Color::WHITE, 2, 5, Color::WHITE, 3, 5, Color::WHITE) 
+      @window.draw_quad(0, 2, Color::WHITE, 0, 3, Color::WHITE, 2, 2, Color::WHITE, 2, 3, Color::WHITE) 
+      @window.draw_quad(3, 2, Color::WHITE, 3, 3, Color::WHITE, 5, 2, Color::WHITE, 5, 3, Color::WHITE) 
+    end
   end
   
   def up
@@ -79,7 +85,7 @@ attr_reader :posX, :posY, :dirX, :dirY, :planeX, :planeY, :moveSpeed, :rotSpeed
   end
   
   def draw
-    @weapon.draw(0.6*SCRW, SCRH-(@weapon.height-@weapon_offset-5)*SCRH.fdiv(IMGH), 2, SCRW.fdiv(IMGW), SCRH.fdiv(IMGH))
-    @cross.draw(SCRW>>1, SCRH>>1, 2, SCRW.fdiv(IMGW), SCRH.fdiv(IMGH))
+    @weapon.draw(0.6*SCRW, SCRH-(@weapon.height-@weapon_offset-5)*@weapon_ratio, 2, @weapon_ratio, @weapon_ratio)
+    @cross.draw_rot(SCRW>>1, SCRH>>1, 2, 0, 0, 0, 2.0, 2.0)				# draw_rot to avoid struggling with finding the exact center of screen
   end
 end
