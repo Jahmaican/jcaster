@@ -52,7 +52,7 @@ attr_reader :posX, :posY, :dirX, :dirY, :planeX, :planeY, :moveSpeed, :rotSpeed
     oldPlaneX = @planeX
     @planeX = @planeX * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed) - @planeY * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed)
     @planeY = oldPlaneX * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed) + @planeY * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed)
-    @window.mouse_x = @window.width >> 1 if @window.mouse_x == 0 or @window.mouse_x == SCRW-1 
+    @window.mouse_x = @window.width >> 1 if @window.mouse_x <= 1 or @window.mouse_x >= SCRW-1 
     @mousePos = @window.mouse_x
   end
   
