@@ -1,8 +1,8 @@
-IMGW = 800
-IMGH = 600
-SCRW = 800
-SCRH = 600
-VERSION = "0.10"
+IMGW = 1366
+IMGH = 768
+SCRW = 1366
+SCRH = 768
+VERSION = "0.11"
 DEBUG = true
 
 def debug(message)
@@ -21,7 +21,7 @@ require './mapClass.rb'
 class JCaster < Window
 attr_reader :gracz, :mapa
   def initialize
-	super SCRW, SCRH, false
+	super SCRW, SCRH, true
     self.caption = "jCaster"
     enable_undocumented_retrofication
     @font = Gosu::Font.new(self, default_font_name, 20)
