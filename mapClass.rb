@@ -1,3 +1,6 @@
+TEXW=64                                                                 # has to be 2^n px
+TEXH=64                                                                 # has to be 2^n px
+
 class Map
   def initialize(window)
     @window = window
@@ -10,71 +13,71 @@ class Map
       @window.draw_quad(0, IMGH>>1, flr_c, IMGW, IMGH>>1, flr_c, 0, IMGH, flr_c, IMGW, IMGH, flr_c) 
     end
 
-    @wallset = [Image.load_tiles(window, "media/walls.png", 1, 64, true),       #see what I did there? 
-                Image.load_tiles(window, "media/wallsd.png", 1, 64, true)]
+    @wallset = [Image.load_tiles(window, "media/walls.png", 1, TEXH, true),       #see what I did there? 
+                Image.load_tiles(window, "media/wallsd.png", 1, TEXH, true)]
   end
   
   def update
     @map = @window.record(IMGW, IMGH) do
       (0..IMGW).each do |x|
-        cameraX = 2*x.fdiv(IMGW)-1
-        rayPosX = @window.gracz.posX
-        rayPosY = @window.gracz.posY
-        rayDirX = @window.gracz.dirX + @window.gracz.planeX * cameraX
-        rayDirY = @window.gracz.dirY + @window.gracz.planeY * cameraX
+        camera_x = 2*x.fdiv(IMGW)-1
+        ray_pos_x = @window.gracz.pos_x
+        ray_pos_y = @window.gracz.pos_y
+        ray_dir_x = @window.gracz.dir_x + @window.gracz.plane_x * camera_x
+        ray_dir_y = @window.gracz.dir_y + @window.gracz.plane_y * camera_x
         
-        mapX = rayPosX.to_i
-        mapY = rayPosY.to_i
+        map_x = ray_pos_x.to_i
+        map_y = ray_pos_y.to_i
         
-        deltaDistX = Math::sqrt(1 + (rayDirY * rayDirY) / (rayDirX * rayDirX))
-        deltaDistY = Math::sqrt(1 + (rayDirX * rayDirX) / (rayDirY * rayDirY))
+        delta_dist_x = Math::sqrt(1 + (ray_dir_y * ray_dir_y) / (ray_dir_x * ray_dir_x))
+        delta_dist_y = Math::sqrt(1 + (ray_dir_x * ray_dir_x) / (ray_dir_y * ray_dir_y))
         
         hit = 0 
   
-        if rayDirX < 0
-          stepX = -1
-          sideDistX = (rayPosX - mapX) * deltaDistX
+        if ray_dir_x < 0
+          step_x = -1
+          side_dist_x = (ray_pos_x - map_x) * delta_dist_x
         else
-          stepX = 1
-          sideDistX = (mapX + 1.0 - rayPosX) * deltaDistX
+          step_x = 1
+          side_dist_x = (map_x + 1.0 - ray_pos_x) * delta_dist_x
         end
   
-        if rayDirY < 0
-          stepY = -1
-          sideDistY = (rayPosY - mapY) * deltaDistY
+        if ray_dir_y < 0
+          step_y = -1
+          side_dist_y = (ray_pos_y - map_y) * delta_dist_y
         else
-          stepY = 1
-          sideDistY = (mapY + 1.0 - rayPosY) * deltaDistY
+          step_y = 1
+          side_dist_y = (map_y + 1.0 - ray_pos_y) * delta_dist_y
         end
         
         while hit==0
-          if sideDistX < sideDistY
-            sideDistX += deltaDistX
-            mapX += stepX
+          if side_dist_x < side_dist_y
+            side_dist_x += delta_dist_x
+            map_x += step_x
             side = 0
           else
-            sideDistY += deltaDistY
-            mapY += stepY
+            side_dist_y += delta_dist_y
+            map_y += step_y
             side = 1
           end
-          hit = 1 if $worldMap[mapX][mapY] > 0
+          hit = 1 if $world_map[map_x][map_y] > 0
         end
         
-        side == 0 ? perpWallDist = ((mapX - rayPosX + (1 - stepX) / 2) / rayDirX).abs : perpWallDist = ((mapY - rayPosY + (1 - stepY) / 2) / rayDirY).abs
+        side == 0 ? perp_wall_dist = ((map_x - ray_pos_x + (1 - step_x) / 2) / ray_dir_x).abs : perp_wall_dist = ((map_y - ray_pos_y + (1 - step_y) / 2) / ray_dir_y).abs
         
-        lineHeight = (IMGH/perpWallDist).abs
+        line_height = (IMGH/perp_wall_dist).abs
         
-        drawStart = -lineHeight/2 + IMGH/2
-        drawEnd = lineHeight/2 + IMGH/2
+        draw_start = -line_height/2 + IMGH/2
+        #draw_end = line_height/2 + IMGH/2
   
-        side == 1 ? wallX = rayPosX + ((mapY-rayPosY + (1-stepY)/2)/rayDirY)*rayDirX : wallX = rayPosY + ((mapX-rayPosX + (1-stepX)/2)/rayDirX)*rayDirY
-        wallX = wallX - wallX.to_i
+        side == 1 ? wall_x = ray_pos_x + ((map_y-ray_pos_y + (1-step_y)/2)/ray_dir_y)*ray_dir_x : wall_x = ray_pos_y + ((map_x-ray_pos_x + (1-step_x)/2)/ray_dir_x)*ray_dir_y
+        wall_x = wall_x - wall_x.to_i
   
-        texX = (wallX * 64).to_i
-        texX = 64 - texX - 1 if (side == 0 && rayDirX > 0)
-        texX = 64 - texX - 1 if (side == 1 && rayDirY < 0) 
+        tex_x = (wall_x*TEXW).to_i
+        tex_x = TEXW - tex_x - 1 if (side == 0 && ray_dir_x > 0)
+        tex_x = TEXW - tex_x - 1 if (side == 1 && ray_dir_y < 0) 
         
-        @wallset[side][($worldMap[mapX][mapY]-1)*64+texX].draw(x,drawStart,1, 1.0, lineHeight.fdiv(64))
+        @wallset[side][(($world_map[map_x][map_y]-1)*TEXW)+tex_x].draw(x,draw_start,1, 1.0, line_height.fdiv(TEXH))
       end
     end
   end

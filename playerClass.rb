@@ -1,13 +1,13 @@
 BOBBING = true
 
 class Player
-attr_reader :posX, :posY, :dirX, :dirY, :planeX, :planeY, :moveSpeed, :rotSpeed
-  def initialize(window, posX, posY)
+attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :rot_speed
+  def initialize(window, pos_x, pos_y)
     @window = window
-    @posX, @posY = posX, posY
-    @dirX, @dirY = -1.0, 0.0
-    @planeX, @planeY = 0.0, 1.0
-    @moveSpeed = 0.12
+    @pos_x, @pos_y = pos_x, pos_y
+    @dir_x, @dir_y = -1.0, 0.0
+    @plane_x, @plane_y = 0.0, 1.0
+    @move_speed = 0.12
 
     @window.mouse_x = @window.width >> 1
     @mousePos = @window.mouse_x
@@ -26,38 +26,38 @@ attr_reader :posX, :posY, :dirX, :dirY, :planeX, :planeY, :moveSpeed, :rotSpeed
   end
   
   def up
-    @posX += @dirX * @moveSpeed if $worldMap[(@posX + @dirX * @moveSpeed).to_i][@posY.to_i] == 0
-    @posY += @dirY * @moveSpeed if $worldMap[@posX.to_i][(@posY + @dirY * @moveSpeed).to_i] == 0
+    @pos_x += @dir_x * @move_speed if $world_map[(@pos_x + @dir_x * @move_speed).to_i][@pos_y.to_i] == 0
+    @pos_y += @dir_y * @move_speed if $world_map[@pos_x.to_i][(@pos_y + @dir_y * @move_speed).to_i] == 0
   end
   
   def down
-    @posX -= @dirX * @moveSpeed if $worldMap[(@posX - @dirX * @moveSpeed).to_i][@posY.to_i] == 0
-    @posY -= @dirY * @moveSpeed if $worldMap[@posX.to_i][(@posY - @dirY * @moveSpeed).to_i] == 0
+    @pos_x -= @dir_x * @move_speed if $world_map[(@pos_x - @dir_x * @move_speed).to_i][@pos_y.to_i] == 0
+    @pos_y -= @dir_y * @move_speed if $world_map[@pos_x.to_i][(@pos_y - @dir_y * @move_speed).to_i] == 0
   end
   
   def right
-    @posX += @planeX * @moveSpeed if $worldMap[(@posX + @planeX * @moveSpeed).to_i][@posY.to_i] == 0
-    @posY += @planeY * @moveSpeed if $worldMap[@posX.to_i][(@posY + @planeY * @moveSpeed).to_i] == 0
+    @pos_x += @plane_x * @move_speed if $world_map[(@pos_x + @plane_x * @move_speed).to_i][@pos_y.to_i] == 0
+    @pos_y += @plane_y * @move_speed if $world_map[@pos_x.to_i][(@pos_y + @plane_y * @move_speed).to_i] == 0
   end
   
   def left
-    @posX -= @planeX * @moveSpeed if $worldMap[(@posX - @planeX * @moveSpeed).to_i][@posY.to_i] == 0
-    @posY -= @planeY * @moveSpeed if $worldMap[@posX.to_i][(@posY - @planeY * @moveSpeed).to_i] == 0
+    @pos_x -= @plane_x * @move_speed if $world_map[(@pos_x - @plane_x * @move_speed).to_i][@pos_y.to_i] == 0
+    @pos_y -= @plane_y * @move_speed if $world_map[@pos_x.to_i][(@pos_y - @plane_y * @move_speed).to_i] == 0
   end
     
   def turn
-    oldDirX = @dirX;
-    @dirX = @dirX * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed) - @dirY * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed)
-    @dirY = oldDirX * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed) + @dirY * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed)
-    oldPlaneX = @planeX
-    @planeX = @planeX * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed) - @planeY * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed)
-    @planeY = oldPlaneX * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed) + @planeY * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed)
+    old_dir_x = @dir_x;
+    @dir_x = @dir_x * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed) - @dir_y * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed)
+    @dir_y = old_dir_x * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed) + @dir_y * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed)
+    old_plane_x = @plane_x
+    @plane_x = @plane_x * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed) - @plane_y * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed)
+    @plane_y = old_plane_x * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed) + @plane_y * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed)
     @window.mouse_x = @window.width >> 1 if @window.mouse_x <= 1 or @window.mouse_x >= SCRW-1 
     @mousePos = @window.mouse_x
   end
   
   def gun_bobbing
-    @weapon_offset =2 * Math::sin((milliseconds/100)%6)
+    @weapon_offset = 2*Math::sin((milliseconds/100)%6)
   end
   
   def update
@@ -86,6 +86,6 @@ attr_reader :posX, :posY, :dirX, :dirY, :planeX, :planeY, :moveSpeed, :rotSpeed
   
   def draw
     @weapon.draw(0.6*SCRW, SCRH-(@weapon.height-@weapon_offset-5)*@weapon_ratio, 2, @weapon_ratio, @weapon_ratio)
-    @cross.draw_rot(SCRW>>1, SCRH>>1, 2, 0, 0, 0, 2.0, 2.0)				# draw_rot to avoid struggling with finding the exact center of screen
+    @cross.draw_rot(SCRW>>1, SCRH>>1, 2, 0, 0, 0, 2.0, 2.0)				      # draw_rot to avoid struggling with finding the exact center of screen
   end
 end

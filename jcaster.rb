@@ -1,8 +1,8 @@
-IMGW = 1366
-IMGH = 768
+IMGW = 640
+IMGH = 480
 SCRW = 1366
 SCRH = 768
-VERSION = "0.11"
+VERSION = "0.12"
 DEBUG = true
 
 def debug(message)
