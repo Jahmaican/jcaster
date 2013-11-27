@@ -1,7 +1,8 @@
-TEXW=64                                                                 # has to be 2^n px
-TEXH=64                                                                 # has to be 2^n px
+TEXW=64
+TEXH=64
 
 class Map
+attr_reader :init
   def initialize(window)
     @window = window
     
@@ -15,6 +16,8 @@ class Map
 
     @wallset = [Image.load_tiles(window, "media/walls.png", 1, TEXH, true),       #see what I did there? 
                 Image.load_tiles(window, "media/wallsd.png", 1, TEXH, true)]
+                
+    @init = true
   end
   
   def update
@@ -32,7 +35,7 @@ class Map
         delta_dist_x = Math::sqrt(1 + (ray_dir_y * ray_dir_y) / (ray_dir_x * ray_dir_x))
         delta_dist_y = Math::sqrt(1 + (ray_dir_x * ray_dir_x) / (ray_dir_y * ray_dir_y))
         
-        hit = 0 
+        hit = false 
   
         if ray_dir_x < 0
           step_x = -1
@@ -50,7 +53,7 @@ class Map
           side_dist_y = (map_y + 1.0 - ray_pos_y) * delta_dist_y
         end
         
-        while hit==0
+        while !hit
           if side_dist_x < side_dist_y
             side_dist_x += delta_dist_x
             map_x += step_x
@@ -60,7 +63,7 @@ class Map
             map_y += step_y
             side = 1
           end
-          hit = 1 if $world_map[map_x][map_y] > 0
+          hit = true if $world_map[map_x][map_y] > 0
         end
         
         side == 0 ? perp_wall_dist = ((map_x - ray_pos_x + (1 - step_x) / 2) / ray_dir_x).abs : perp_wall_dist = ((map_y - ray_pos_y + (1 - step_y) / 2) / ray_dir_y).abs
@@ -76,6 +79,7 @@ class Map
         tex_x = (wall_x*TEXW).to_i
         tex_x = TEXW - tex_x - 1 if (side == 0 && ray_dir_x > 0)
         tex_x = TEXW - tex_x - 1 if (side == 1 && ray_dir_y < 0) 
+        
         
         @wallset[side][(($world_map[map_x][map_y]-1)*TEXW)+tex_x].draw(x,draw_start,1, 1.0, line_height.fdiv(TEXH))
       end

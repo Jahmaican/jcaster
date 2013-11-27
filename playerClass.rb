@@ -1,19 +1,19 @@
 BOBBING = true
 
 class Player
-attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :rot_speed
+attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :rot_speed, :init
   def initialize(window, pos_x, pos_y)
     @window = window
     @pos_x, @pos_y = pos_x, pos_y
     @dir_x, @dir_y = -1.0, 0.0
     @plane_x, @plane_y = 0.0, 1.0
-    @move_speed = 0.12
+    @move_speed = 0.1
 
     @window.mouse_x = @window.width >> 1
-    @mousePos = @window.mouse_x
-    @mouseSpeed = 0.006
+    @mouse_pos = @window.mouse_x
+    @mouse_speed = 0.005
     
-    @weapon = Image.new(window, "media/uzi.gif", false)
+    @weapon = Image.new(window, "media/uzi.png", false)
     @weapon_offset = 0
     @weapon_ratio = 0.3*SCRH.fdiv(@weapon.height)
     
@@ -23,6 +23,7 @@ attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :ro
       @window.draw_quad(0, 2, Color::WHITE, 0, 3, Color::WHITE, 2, 2, Color::WHITE, 2, 3, Color::WHITE) 
       @window.draw_quad(3, 2, Color::WHITE, 3, 3, Color::WHITE, 5, 2, Color::WHITE, 5, 3, Color::WHITE) 
     end
+    @init = true
   end
   
   def up
@@ -47,13 +48,13 @@ attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :ro
     
   def turn
     old_dir_x = @dir_x;
-    @dir_x = @dir_x * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed) - @dir_y * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed)
-    @dir_y = old_dir_x * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed) + @dir_y * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed)
+    @dir_x = @dir_x * Math::cos((@mouse_pos-@window.mouse_x)*@mouse_speed) - @dir_y * Math::sin((@mouse_pos-@window.mouse_x)*@mouse_speed)
+    @dir_y = old_dir_x * Math::sin((@mouse_pos-@window.mouse_x)*@mouse_speed) + @dir_y * Math::cos((@mouse_pos-@window.mouse_x)*@mouse_speed)
     old_plane_x = @plane_x
-    @plane_x = @plane_x * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed) - @plane_y * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed)
-    @plane_y = old_plane_x * Math::sin((@mousePos-@window.mouse_x)*@mouseSpeed) + @plane_y * Math::cos((@mousePos-@window.mouse_x)*@mouseSpeed)
+    @plane_x = @plane_x * Math::cos((@mouse_pos-@window.mouse_x)*@mouse_speed) - @plane_y * Math::sin((@mouse_pos-@window.mouse_x)*@mouse_speed)
+    @plane_y = old_plane_x * Math::sin((@mouse_pos-@window.mouse_x)*@mouse_speed) + @plane_y * Math::cos((@mouse_pos-@window.mouse_x)*@mouse_speed)
     @window.mouse_x = @window.width >> 1 if @window.mouse_x <= 1 or @window.mouse_x >= SCRW-1 
-    @mousePos = @window.mouse_x
+    @mouse_pos = @window.mouse_x
   end
   
   def gun_bobbing
@@ -81,7 +82,7 @@ attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :ro
       gun_bobbing if BOBBING
     end
     
-    turn if @mousePos != @window.mouse_x
+    turn if @mouse_pos != @window.mouse_x
   end
   
   def draw
