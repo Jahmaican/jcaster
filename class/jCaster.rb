@@ -1,8 +1,4 @@
-IMGW = 1600
-IMGH = 900
-SCRW = 1600
-SCRH = 900
-VERSION = "0.13"
+VERSION = "0.2"
 DEBUG = true
 
 def debug(message)
@@ -13,17 +9,37 @@ require 'gosu'
 include Gosu
 
 debug("jCaster v#{VERSION} \n\t\tby Jahmaican")
-
-require './worldMap.rb'
-require './playerClass.rb'
-require './mapClass.rb'
-require './timer.rb'
  
 class JCaster < Window
-attr_reader :gracz, :mapa
+attr_reader :gracz, :mapa, :scrW, :scrH, :imgW, :imgH
   def initialize
-    super SCRW, SCRH, true
-    self.caption = "jCaster"
+    settings = Array.new
+    IO.foreach("settings") do |str| 
+      str.tr!("\n", "")
+      settings.push(str)
+    end
+    
+    @scrW = settings[0].to_i
+    @scrH = settings[1].to_i
+    
+    super @scrW, @scrH, true
+    self.caption = "jCaster v#{VERSION}"
+    
+    case settings[2].to_i
+      when 0
+        @imgW = 160
+        @imgH = 90
+      when 1
+        @imgW = 320
+        @imgH = 180
+      when 2
+        @imgW = @scrW>>1
+        @imgH = @scrH>>1
+      when 3
+        @imgW = @scrW
+        @imgH = @scrH
+    end
+    
     enable_undocumented_retrofication
     @font = Gosu::Font.new(self, "media/boxybold.ttf", 20)
     @state = :loading
@@ -31,7 +47,7 @@ attr_reader :gracz, :mapa
     
     @gracz = Player.new(self, 18, 3)
     @mapa = Map.new(self)
-    @init = true
+    debug("Wszystko gra!")
   end
     
   def update
@@ -73,6 +89,3 @@ attr_reader :gracz, :mapa
     end
   end
 end
-
-debug("Wszystko gra!")
-JCaster.new.show

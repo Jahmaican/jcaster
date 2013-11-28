@@ -1,4 +1,5 @@
 BOBBING = true
+MOV_SPD = 0.1
 
 class Player
 attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :rot_speed, :init
@@ -7,7 +8,6 @@ attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :ro
     @pos_x, @pos_y = pos_x, pos_y
     @dir_x, @dir_y = -1.0, 0.0
     @plane_x, @plane_y = 0.0, 1.0
-    @move_speed = 0.1
 
     @window.mouse_x = @window.width >> 1
     @mouse_pos = @window.mouse_x
@@ -15,7 +15,7 @@ attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :ro
     
     @weapon = Image.new(window, "media/uzi.png", false)
     @weapon_offset = 0
-    @weapon_ratio = 0.3*SCRH.fdiv(@weapon.height)
+    @weapon_ratio = 0.3*@window.scrH.fdiv(@weapon.height)
     
     @cross = @window.record(5, 5) do
       @window.draw_quad(2, 0, Color::WHITE, 3, 0, Color::WHITE, 2, 2, Color::WHITE, 3, 2, Color::WHITE) 
@@ -53,7 +53,7 @@ attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :ro
     old_plane_x = @plane_x
     @plane_x = @plane_x * Math::cos((@mouse_pos-@window.mouse_x)*@mouse_speed) - @plane_y * Math::sin((@mouse_pos-@window.mouse_x)*@mouse_speed)
     @plane_y = old_plane_x * Math::sin((@mouse_pos-@window.mouse_x)*@mouse_speed) + @plane_y * Math::cos((@mouse_pos-@window.mouse_x)*@mouse_speed)
-    @window.mouse_x = @window.width >> 1 if @window.mouse_x <= 1 or @window.mouse_x >= SCRW-1 
+    @window.mouse_x = @window.width >> 1 if @window.mouse_x <= 1 or @window.mouse_x >= @window.scrW-1 
     @mouse_pos = @window.mouse_x
   end
   
@@ -62,12 +62,14 @@ attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :ro
   end
   
   def update
-    if @window.button_down? KbUp or @window.button_down? KbW
+    @move_speed = double_keys? ? MOV_SPD/Math::sqrt(2) : MOV_SPD
+    
+    if @window.button_down? KbW
       up 
       gun_bobbing if BOBBING
     end
     
-    if @window.button_down? KbDown or @window.button_down? KbS
+    if @window.button_down? KbS
       down
       gun_bobbing if BOBBING
     end
@@ -85,8 +87,12 @@ attr_reader :pos_x, :pos_y, :dir_x, :dir_y, :plane_x, :plane_y, :move_speed, :ro
     turn if @mouse_pos != @window.mouse_x
   end
   
+  def double_keys?
+    (@window.button_down? KbW or @window.button_down? KbS) and (@window.button_down? KbA or @window.button_down? KbD)
+  end
+  
   def draw
-    @weapon.draw(0.6*SCRW, SCRH-(@weapon.height-@weapon_offset-5)*@weapon_ratio, 2, @weapon_ratio, @weapon_ratio)
-    @cross.draw_rot(SCRW>>1, SCRH>>1, 2, 0, 0, 0, 2.0, 2.0)				      # draw_rot to avoid struggling with finding the exact center of screen
+    @weapon.draw(0.6*@window.scrW, @window.scrH-(@weapon.height-@weapon_offset-5)*@weapon_ratio, 2, @weapon_ratio, @weapon_ratio)
+    @cross.draw_rot(@window.scrW>>1, @window.scrH>>1, 2, 0, 0, 0, 2.0, 2.0)				      # draw_rot to avoid struggling with finding the exact center of screen
   end
 end
